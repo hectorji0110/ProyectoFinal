@@ -4,7 +4,7 @@ import bcrypt from "bcryptjs";
 // 🟢 Obtener todos los usuarios
 export const getAllUsers = async (req, res) => {
   try {
-    const usuarios = await User.find().select("-contrasena");
+    const usuarios = await User.find({ activo: true }).select("-contrasena");
     res.json(usuarios);
   } catch (error) {
     res.status(500).json({ message: "Error al obtener usuarios", error });
@@ -14,7 +14,7 @@ export const getAllUsers = async (req, res) => {
 // 🟢 Obtener usuario por ID
 export const getUserById = async (req, res) => {
   try {
-    const usuario = await User.findById(req.params.id).select("-contrasena");
+    const usuario = await User.findOne({ _id: req.params.id, activo: true}).select("-contrasena");
     if (!usuario) return res.status(404).json({ message: "Usuario no encontrado" });
     res.json(usuario);
   } catch (error) {

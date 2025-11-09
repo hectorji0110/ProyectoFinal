@@ -7,6 +7,7 @@ const userSchema = new mongoose.Schema({
   telefono: { type: String },
   direccion: { type: String },
   rol: { type: String, enum: ["usuario", "admin"], default: "usuario" },
+  activo: { type: Boolean, default: true }, // 👈 este campo es clave
   fecha_registro: { type: Date, default: Date.now },
   foto_perfil: { type: String } // URL o path
 });
