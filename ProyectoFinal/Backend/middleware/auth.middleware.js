@@ -1,28 +1,110 @@
 import jwt from "jsonwebtoken";
 import User from "../models/user.models.js";
 
-export const verifyToken = async (req, res, next) => {
-  const auth = req.headers.authorization || "";
-  const token = auth.startsWith("Bearer ") ? auth.split(" ")[1] : null;
-  if (!token) return res.status(401).json({ msg: "No token, autorización denegada" });
+/**
+ * @description Middleware para verificar el token JWT y adjuntar el usuario al request.
+ * - Valida formato y existencia del token.
+ * - Verifica la firma y expiración del JWT.
+ * - Carga al usuario desde la BD (si no está borrado ni inactivo).
+ * - Permite acceso a admin o dueño del recurso.
+ * 
+ * @param {Object} req - Objeto de solicitud Express
+ * @param {Object} res - Objeto de respuesta Express
+ * @param {Function} next - Función de middleware siguiente
+ * 
+ * @returns {Function} - Función middleware
+ * 
+ * @throws {Error} - Si ocurre un error durante la verificación del token
 
+ */
+export const verifyToken = async (req, res, next) => {
   try {
-    const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    // decoded tiene payload: { id, rol, iat, exp }
-    req.user = { id: decoded.id, rol: decoded.rol }; // lo pondremos disponible
-    // opcional: cargar usuario completo si lo necesitas
-    // req.userDoc = await User.findById(decoded.id).select("-contrasena");
-    next();
-  } catch (err) {
-    console.error(err);
-    return res.status(401).json({ msg: "Token inválido o expirado" });
+    // 1. Extraer el token del header
+    const auth = req.headers.authorization || "";
+    const token = auth.startsWith("Bearer ") ? auth.split(" ")[1] : null;
+
+    if (!token) {
+      return res.status(401).json({ msg: "No se proporcionó un token. Acceso denegado." });
+    }
+
+    // 2. Verificar el token y obtener el payload
+    let decoded;
+    try {
+      decoded = jwt.verify(token, process.env.JWT_SECRET);
+    } catch (err) {
+      return res.status(401).json({ msg: "Token inválido o expirado." });
+    }
+
+    // decoded debe contener { id, rol, iat, exp }
+    if (!decoded.id) {
+      return res.status(401).json({ msg: "Token inválido: falta el ID de usuario." });
+    }
+
+    // 3. Buscar usuario en base de datos
+    const user = await User.findById(decoded.id).select("-contrasena");
+
+    if (!user) {
+      return res.status(404).json({ msg: "Usuario no encontrado." });
+    }
+
+    // 4. Verificar si el usuario sigue activo y no borrado
+  // Si el usuario está borrado pero es admin, permitir
+if (user.borrado && user.rol !== "admin") {
+  return res.status(403).json({
+    msg: "Cuenta desactivada o eliminada. Acceso denegado."
+  });
+}
+    // 5. Adjuntar info útil al request
+    req.user = {
+      id: user._id.toString(),
+      rol: user.rol,
+      nombre: user.nombre,
+      email: user.email
+    };
+    
+    next(); //Continuar hacia el siguiente middleware/controlador
+  } catch (error) {
+    console.error("Error en verifyToken:", error);
+    res.status(500).json({ msg: "Error interno en autenticación" });
   }
 };
 
+/**
+ * @description Middleware para restringir acceso solo a administradores o dueños del recurso.
+ * - Permite acceso si el usuario es admin.
+ * - Permite acceso si el usuario intenta acceder a su propio recurso (:id).
+ * - Denega acceso en cualquier otro caso.
+ * 
+ * @param {Object} req - Objeto de solicitud Express
+ * @param {Object} res - Objeto de respuesta Express
+ * @param {Function} next - Función de middleware siguiente
+ * 
+ * @returns {Function} - Función middleware
+ * 
+ * @throws {Error} - Si ocurre un error durante la verificación
+ */
 export const isAdminOrOwner = (req, res, next) => {
-  // si rol es admin, permitir
-  if (req.user.rol === "admin") return next();
-  // si se está accediendo al recurso propio (por ejemplo :id)
-  if (req.params.id && req.params.id === req.user.id) return next();
-  return res.status(403).json({ msg: "Acceso restringido" });
+  try {
+    const { user } = req;
+
+    if (!user) {
+      return res.status(401).json({ msg: "Usuario no autenticado." });
+    }
+
+    // Si el rol es admin → acceso directo
+    if (user.rol === "admin") {
+      return next();
+    }
+
+    // Si intenta acceder a su propio perfil → permitido
+    if (req.params.id && req.params.id === user.id) {
+      return next();
+    }
+
+    // Si no cumple ninguna condición → acceso denegado
+    return res.status(403).json({ msg: "Acceso restringido. No tienes permisos suficientes." });
+  } catch (error) {
+    console.error("Error en isAdminOrOwner:", error);
+    res.status(500).json({ msg: "Error interno de autorización" });
+  }
 };

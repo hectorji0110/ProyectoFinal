@@ -4,15 +4,53 @@ import mascotasRoutes from "./routes/mascotas.routes.js";
 import adopcionesRoutes from "./routes/adopciones.routes.js";
 import mensajesRoutes from "./routes/mensajes.routes.js";
 import userAdminRoutes from "./routes/userAdmin.routes.js";
+import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
-
+/**
+ * @description Configuraciones
+ * @access Public
+ * @returns {Object} - Objeto con el mensaje dexito
+ */
 dotenv.config();
 const app = express();
 app.use(express.json());
 
+/**
+ * @description Configuraciones cors
+ * @access solo los que esten en la lista blanca
+ */
+
+//configurar cors
+const whitelist = ['http://localhost:3000', 'http://localhost:5173']; // Lista blanca de dominios permitidos
+//Opcion privada
+const corsOptions = {
+  origin: function (origin, callback) {
+    if (whitelist.indexOf(origin) !== -1 || !origin) {
+      callback(null, true);
+    } else {
+      callback(new Error('No permitido por CORS'));
+    }
+  }
+};
+app.use(cors(corsOptions));
+
+// Opcion publica
+//app.use(cors());
+
+/**
+ * @description Conectar a la base de datos
+ * @access Public
+ * @returns {Object} - Objeto con el mensaje dexito
+ */
 mongoose.connect(process.env.MONGO_URI).then(()=>console.log("Mongo OK"));
 
+
+/**
+ * @description Rutas
+ * @access Public
+ * @returns {Object} - Objeto con el mensaje dexito
+ */
 app.use("/auth", authRoutes);
 app.use("/admin/users", userAdminRoutes); // Para panel admin
 app.use("/mascotas", mascotasRoutes);
