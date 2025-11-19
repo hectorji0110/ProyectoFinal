@@ -22,7 +22,7 @@ app.use(express.json());
  */
 
 //configurar cors
-const whitelist = ['http://localhost:3000', 'http://localhost:5173']; // Lista blanca de dominios permitidos
+const whitelist = ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174']; // Lista blanca de dominios permitidos
 //Opcion privada
 const corsOptions = {
   origin: function (origin, callback) {

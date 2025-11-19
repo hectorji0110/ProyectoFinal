@@ -91,6 +91,8 @@ const userSchema = new mongoose.Schema({
         message: "La URL de la foto de perfil no es válida"
       }
     }, // URL o path
+  resetPasswordToken: { type: String, default: null },
+  resetPasswordExpire: { type: Date, default: null },
   borradoEn: { type: Date, default: null }, // 👈 campo para soft delete
   borrado: { type: Boolean, default: false } // 👈 campo para soft delete
 }, { timestamps: true });

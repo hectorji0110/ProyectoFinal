@@ -1,9 +1,17 @@
 import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
+import { BrowserRouter } from "react-router-dom";
+import { Toaster } from 'react-hot-toast'
+import { AuthProvider } from './components/AuthContext.jsx'
 import App from './App.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <App />
+     <AuthProvider>
+      <BrowserRouter>
+        <App />
+        <Toaster position="top-center" />
+      </BrowserRouter>
+    </AuthProvider>
   </StrictMode>,
 )

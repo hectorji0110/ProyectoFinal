@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { login, register } from '../controllers/auth.controller.js';
+import { login, register, solicitarRecuperacion, restablecerContrasena } from '../controllers/auth.controller.js';
+import { logout, verifyToken } from "../middleware/auth.middleware.js";
 
 const router = Router();
 /**
@@ -32,5 +33,9 @@ router.post('/register', register);
  */
 // POST /auth/login — obtener JWT
 router.post('/login', login);
+
+router.post("/logout", verifyToken, logout);
+router.post("/recuperar-password", solicitarRecuperacion);
+router.post("/restablecer-password/:token", restablecerContrasena);
 
 export default router;

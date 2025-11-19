@@ -1,10 +1,13 @@
 import React from "react";
 import { Button } from "./ui/Button";
+import { useNavigate } from "react-router-dom";
 import puppy from "../assets/golden.png"; // Ajusta el nombre de tu imagen
 
 const Hero = () => {
+const navigate = useNavigate();
+
   return (
-    <section className="w-full h-full flex items-center justify-center bg-gradient-to-bottom from-orange-50 to-blue-50 dark:from-gray-900 dark:to-gray-800">
+    <section className="pt-24 pb-12 w-full h-full flex items-center justify-center bg-gradient-to-r from-orange-100 to-blue-100 dark:from-gray-600 dark:to-gray-800">
       <div className="container mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
         
         {/* Texto principal */}
@@ -22,11 +25,11 @@ const Hero = () => {
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white">
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={() => navigate("/ver-mascotas")}>
               Ver Mascotas
             </Button>
 
-            <Button variant="outline" className="border-gray-300 dark:border-gray-600">
+            <Button variant="outline" className="border-gray-300 dark:border-gray-600" onClick={() => navigate("/publicar-mascota")}>
               Publicar Mascota
             </Button>
           </div>

@@ -12,11 +12,14 @@ import User from "../models/user.models.js";
  * @param {Object} res - Objeto de respuesta Express
  * @param {Function} next - Función de middleware siguiente
  * 
+ * 
  * @returns {Function} - Función middleware
  * 
  * @throws {Error} - Si ocurre un error durante la verificación del token
 
  */
+
+export const tokenBlacklist = new Set();
 export const verifyToken = async (req, res, next) => {
   try {
     // 1. Extraer el token del header
@@ -25,6 +28,12 @@ export const verifyToken = async (req, res, next) => {
 
     if (!token) {
       return res.status(401).json({ msg: "No se proporcionó un token. Acceso denegado." });
+    }
+
+
+    // 1.5. Verificar si el token está en la blacklist
+    if (tokenBlacklist.has(token)) {
+      return res.status(401).json({ msg: "Token inválido o expirado." });
     }
 
     // 2. Verificar el token y obtener el payload
@@ -106,5 +115,22 @@ export const isAdminOrOwner = (req, res, next) => {
   } catch (error) {
     console.error("Error en isAdminOrOwner:", error);
     res.status(500).json({ msg: "Error interno de autorización" });
+  }
+};
+
+export const logout = (req, res) => {
+  try {
+    const auth = req.headers.authorization || "";
+    const token = auth.startsWith("Bearer ") ? auth.split(" ")[1] : null;
+
+    if (token) {
+      tokenBlacklist.add(token);
+    }
+
+    return res.json({ msg: "Sesión cerrada correctamente" });
+
+  } catch (error) {
+    console.error("Error en logout:", error);
+    res.status(500).json({ msg: "Error al cerrar sesión" });
   }
 };
