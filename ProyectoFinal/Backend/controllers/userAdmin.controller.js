@@ -29,7 +29,7 @@ export const getAllUsers = async (req, res) => {
   // Configuración de paginación
     const options = {
       page: parseInt(req.query.page) || 1,
-      limit: 10,
+      limit: 6,
       sort: { createdAt: -1 },
       select: "-contrasena"
     };
@@ -88,24 +88,32 @@ export const createUser = async (req, res) => {
     const { nombre, apellido, email, contrasena, rol } = req.body;
 
     const existe = await User.findOne({ email });
-    if (existe) return res.status(400).json({ message: "El usuario ya existe" });
+    if (existe) {
+      return res.status(400).json({ message: "El usuario ya existe" });
+    }
 
+    // HASH CONTRASEÑA
+    const hashedPassword = await bcrypt.hash(contrasena, 10);
 
     const nuevoUsuario = new User({
       nombre,
       apellido,
       email,
-      contrasena,
+      contrasena: hashedPassword,
       rol: rol || "usuario",
     });
 
     await nuevoUsuario.save();
-    res.status(201).json({ message: "Usuario creado correctamente", usuario: nuevoUsuario });
+    res.status(201).json({
+      message: "Usuario creado correctamente",
+      usuario: nuevoUsuario,
+    });
+
   } catch (error) {
+    console.error("Error en createUser:", error);
     res.status(500).json({ message: "Error al crear usuario", error });
   }
 };
-
 /**
  * @route PATCH /admin/users/:id
  * @description Actualiza los datos de un usuario existente.
@@ -169,5 +177,29 @@ export const deleteUser = async (req, res) => {
     res.json({ message: "Usuario eliminado correctamente" });
   } catch (error) {
     res.status(500).json({ message: "Error al eliminar usuario", error });
+  }
+};
+
+export const restoreUser = async (req, res) => {
+  try {
+    const usuario = await User.findById(req.params.id);
+
+    if (!usuario) {
+      return res.status(404).json({ message: "Usuario no encontrado" });
+    }
+
+    usuario.borrado = false;
+    usuario.borradoEn = null;
+    usuario.activo = true;
+
+    await usuario.save({ validateBeforeSave: false });
+
+    res.json({ message: "Usuario restaurado correctamente" });
+  } catch (error) {
+    console.error("ERROR RESTAURANDO:", error);
+    res.status(500).json({
+      message: "Error al restaurar usuario",
+      error: error.message,
+    });
   }
 };

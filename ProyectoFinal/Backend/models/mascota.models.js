@@ -32,6 +32,7 @@ const mascotaSchema = new mongoose.Schema({
   edad: { type: Number },
   tipo: {
     type: String,
+    lowercase: true,
     enum: {
       values: ["perro", "gato", "otro"],
       message: "El tipo debe ser 'perro', 'gato' u 'otro'"
@@ -45,6 +46,7 @@ const mascotaSchema = new mongoose.Schema({
   },
   genero: {
     type: String,
+    lowercase: true,
     enum: {
       values: ["macho", "hembra", "desconocido"],
       message: "El género debe ser 'macho', 'hembra' o 'desconocido'"
@@ -52,6 +54,7 @@ const mascotaSchema = new mongoose.Schema({
   },
   tamano: {
     type: String,
+    lowercase: true,
     enum: {
       values: ["pequeño", "mediano", "grande"],
       message: "El tamaño debe ser 'pequeño', 'mediano' o 'grande'"
@@ -62,7 +65,7 @@ const mascotaSchema = new mongoose.Schema({
     trim: true,
     maxlength: [500, "La descripción no puede superar los 500 caracteres"]
   },
-  fotos: [{ type: String }], // array de URLs
+  foto: [{ type: String }], // array de URLs
   ubicacion: {
     type: String,
     trim: true,
@@ -81,7 +84,11 @@ const mascotaSchema = new mongoose.Schema({
   fecha_publicacion: { type: Date, default: Date.now },
   id_usuario: { type: mongoose.Schema.Types.ObjectId, ref: "User", required: true },
   borradoEn: { type: Date, default: null }, // campo para soft delete
-  borrado: { type: Boolean, default: false } // campo para soft delete
+  borrado: { type: Boolean, default: false }, // campo para soft delete
+  estado: {
+    type: Boolean,
+    default: true
+  }
 }, { timestamps: true });
 
 mascotaSchema.plugin(mongoosePaginate);

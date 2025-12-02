@@ -27,9 +27,8 @@ const Footer = () => {
             Adoptar
           </h3>
           <ul className="space-y-2 text-gray-600 dark:text-gray-300 text-sm">
-            <li><a href="#" className="hover:text-orange-500">Ver Perros</a></li>
-            <li><a href="#" className="hover:text-orange-500">Ver Gatos</a></li>
-            <li><a href="#" className="hover:text-orange-500">Proceso de Adopción</a></li>
+            <li><a href="/publicar-mascota" className="hover:text-orange-500">Como publicar</a></li>
+            <li><a href="/lista-mascotas" className="hover:text-orange-500">Proceso de Adopción</a></li>
           </ul>
         </div>
 
@@ -39,9 +38,8 @@ const Footer = () => {
             Ayuda
           </h3>
           <ul className="space-y-2 text-gray-600 dark:text-gray-300 text-sm">
-            <li><a href="#" className="hover:text-orange-500">Cómo Funciona</a></li>
-            <li><a href="#" className="hover:text-orange-500">Preguntas Frecuentes</a></li>
-            <li><a href="#" className="hover:text-orange-500">Contacto</a></li>
+            <li><a href="/ayuda" className="hover:text-orange-500">Preguntas Frecuentes</a></li>
+            <li><a href="/contacto" className="hover:text-orange-500">Contacto</a></li>
           </ul>
         </div>
 
@@ -51,9 +49,8 @@ const Footer = () => {
             Legal
           </h3>
           <ul className="space-y-2 text-gray-600 dark:text-gray-300 text-sm">
-            <li><a href="#" className="hover:text-orange-500">Términos de Uso</a></li>
-            <li><a href="#" className="hover:text-orange-500">Privacidad</a></li>
-            <li><a href="#" className="hover:text-orange-500">Cookies</a></li>
+            <li><a href="/politica-privacidad" className="hover:text-orange-500">Privacidad</a></li>
+            <li><a href="/seguridad" className="hover:text-orange-500">Seguridad</a></li>
           </ul>
         </div>
 

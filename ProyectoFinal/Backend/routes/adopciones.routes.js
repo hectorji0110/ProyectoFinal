@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllAdopciones, getAdopcionById, createAdopcion, updateAdopcion, deleteAdopcion } from '../controllers/adopciones.controller.js';
+import { getAllAdopciones, getAdopcionById, createAdopcion, updateAdopcion, deleteAdopcion, restoreAdopcion } from '../controllers/adopciones.controller.js';
 import { verifyToken } from "../middleware/auth.middleware.js";
 
 const router = Router();
@@ -59,5 +59,6 @@ router.patch('/:id', verifyToken, updateAdopcion);
  */
 // Ruta para eliminar una adopcion (soft delete)
 router.delete('/:id', verifyToken, deleteAdopcion);
+router.patch("/restore/:id", restoreAdopcion);
 
 export default router;

@@ -15,7 +15,7 @@ const ResetPassword = () => {
 
     try {
       const { data } = await axios.post(
-        `http://localhost:3000/auth/restablecer-password/${token}`,
+        `${import.meta.env.VITE_API_URL}/auth/restablecer-password/${token}`,
         { nuevaContrasena: password }
       );
 
@@ -31,6 +31,10 @@ const ResetPassword = () => {
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-blue-100 dark:from-gray-900 dark:to-gray-800 px-4">
       <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8">
+        {/* Ícono */}
+        <div className="w-20 h-20 bg-orange-500 rounded-full mx-auto flex items-center justify-center text-4xl">
+         <img src="../src/assets/material-symbols-light--map-pin-heart-rounded.svg" alt="Buscar" className="w-16 h-16 object-contain" />
+        </div>
 
         <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mt-4">
           Restablecer Contraseña

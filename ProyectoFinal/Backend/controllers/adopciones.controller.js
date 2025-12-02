@@ -22,22 +22,26 @@ import Mascota from "../models/mascota.models.js";
 // Crear solicitud de adopción
 export const createAdopcion = async (req, res) => {
   try {
-    const { id_mascota, mensaje } = req.body;
+    const { id_usuario, id_mascota, mensaje } = req.body;
 
     // validar campos
-    if (!id_mascota || !mensaje) {
-      return res.status(400).json({ msg: "Debe incluir id_mascota y mensaje" });
+    if (!id_mascota || !mensaje || !id_usuario) {
+      return res.status(400).json({ msg: "Debe incluir id_usuario, id_mascota y mensaje" });
     }
 
     // verificar que la mascota existe
     const mascota = await Mascota.findById(id_mascota);
     if (!mascota) return res.status(404).json({ msg: "Mascota no encontrada" });
 
+    // verificar que el usuario existe
+    const usuario = await User.findById(id_usuario);
+    if (!usuario) return res.status(404).json({ msg: "Usuario no encontrado" });
+
     const nuevaAdopcion = new Adopcion({
-      id_usuario: req.user.id,  // viene del token
+      id_usuario,
       id_mascota,
       mensaje,
-      estado: "pendiente", // pendiente inicialmente
+      estado: "pendiente",
       fecha_solicitud: new Date()
     });
 
@@ -139,9 +143,7 @@ export const getAllAdopciones = async (req, res) => {
     let filter = {}; // Soft delete base
     if (req.query.borradas === "true") {
     filter.borrado = true;
-  } else {
-    filter.borrado = false; // por defecto solo activas
-}
+  } 
 
     // 🔍 Buscar por nombre del usuario (si se proporciona)
     if (nombre) {
@@ -167,7 +169,7 @@ export const getAllAdopciones = async (req, res) => {
     // Configuración de paginación
     const options = {
       page: parseInt(req.query.page) || 1,
-      limit: 10,
+      limit: 6,
       sort: { createdAt: -1 },
       populate: [
         { path: "id_usuario", select: "nombre email" },
@@ -215,3 +217,18 @@ export const getAdopcionById = async (req, res) => {
     res.status(500).json({ msg: "Error al obtener la solicitud" });
   }
 };
+ 
+export const restoreAdopcion = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const adopcion = await Adopcion.findById(id);
+    if (!adopcion) return res.status(404).json({ msg: "Solicitud no encontrada" });
+    adopcion.borrado = false;
+    await adopcion.save();
+    res.json({ msg: "Solicitud restaurada" });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Error al restaurar la solicitud" });
+  }
+};  
+

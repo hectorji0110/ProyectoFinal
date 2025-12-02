@@ -21,14 +21,15 @@ import User from "../models/user.models.js";
 // Crear mensaje o soporte
 export const createMensaje = async (req, res) => {
   try {
-    const { asunto, contenido, tipo } = req.body;
+  const { id_usuario, asunto, contenido, tipo } = req.body;
 
-    if (!asunto || !contenido || !tipo) {
-      return res.status(400).json({ msg: "Debe incluir asunto, contenido y tipo" });
-    }
+if (!asunto || !contenido || !tipo || !id_usuario) {
+  return res.status(400).json({ msg: "Debe incluir usuario, asunto, contenido y tipo" });
+}
+
 
     const nuevoMensaje = new Mensaje({
-      id_usuario: req.user.id, // del token
+      id_usuario,
       asunto,
       contenido,
       tipo,
@@ -138,9 +139,7 @@ export const getAllMensajes = async (req, res) => {
 let filter = {}; // siempre excluir borrados
 if (req.query.borradas === "true") {
   filter.borrado = true;
-} else {
-  filter.borrado = false; // por defecto solo activas
-}
+} 
 
 // Buscar por nombre del usuario (si se proporciona)
     if (nombre) {
@@ -160,7 +159,7 @@ if (estado) filter.estado = estado;
  // Configuración de paginación
     const options = {
       page: parseInt(req.query.page) || 1,
-      limit: 10,
+      limit: 6,
       sort: { createdAt: -1 },
       populate: [
         { path: "id_usuario", select: "nombre email" }
@@ -201,5 +200,31 @@ export const getMensajeById = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "Error al obtener el mensaje" });
+  }
+};
+
+// Restaurar mensaje
+export const restaurarMensaje = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const mensaje = await Mensaje.findById(id);
+
+    if (!mensaje) {
+      return res.status(404).json({ msg: "Mensaje no encontrado" });
+    }
+
+    if (!mensaje.borrado) {
+      return res.status(400).json({ msg: "El mensaje ya está activo" });
+    }
+
+    mensaje.borrado = false;
+    mensaje.borradoEn = null; // si tienes un campo de fecha de borrado
+    await mensaje.save({ validateBeforeSave: false });
+
+    res.status(200).json({ msg: "Mensaje restaurado correctamente", mensaje });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ msg: "Error al restaurar el mensaje" });
   }
 };

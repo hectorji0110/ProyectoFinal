@@ -45,7 +45,7 @@ toast.success(" ¡Se ha registrado con exito!");
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-blue-100 dark:from-gray-900 dark:to-gray-800 px-4">
+    <div className="pt-24 pb-12 min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-blue-100 dark:from-gray-900 dark:to-gray-800 px-4">
       <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8">
         
         {/* Icono */}
@@ -69,12 +69,12 @@ toast.success(" ¡Se ha registrado con exito!");
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Nombres del usuario
+              Nombre
             </label>
             <input
               type="text"
               className="w-full px-4 py-2 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
-              placeholder="tuNombre"
+              placeholder="Escribe tu nombre"
               value={name}
               onChange={(e) => setName(e.target.value)}
               required
@@ -84,12 +84,12 @@ toast.success(" ¡Se ha registrado con exito!");
 
           <div>
             <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Apellido del usuario
+              Apellido
             </label>
             <input
               type="text"
               className="w-full px-4 py-2 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
-              placeholder="tuApellido"
+              placeholder="Escribe tu apellido"
               value={lastName}
               onChange={(e) => setLastName(e.target.value)}
               required
@@ -141,7 +141,7 @@ toast.success(" ¡Se ha registrado con exito!");
 
           <button
             type="submit"
-            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold"
+            className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold cursor-pointer"
           >
             Registrarse
           </button>

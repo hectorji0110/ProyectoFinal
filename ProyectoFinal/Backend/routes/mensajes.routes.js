@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllMensajes, getMensajeById, createMensaje, updateMensaje, deleteMensaje } from '../controllers/mensajes.controller.js';
+import { getAllMensajes, getMensajeById, createMensaje, updateMensaje, deleteMensaje, restaurarMensaje } from '../controllers/mensajes.controller.js';
 import { verifyToken } from "../middleware/auth.middleware.js";
 
 const router = Router();
@@ -58,5 +58,7 @@ router.patch('/:id', verifyToken, updateMensaje);
  */
 // Ruta para eliminar un mensaje (soft delete)
 router.delete('/:id', verifyToken, deleteMensaje);
+// PATCH /mensajes/restore/:id
+router.patch("/restore/:id", restaurarMensaje);
 
 export default router;

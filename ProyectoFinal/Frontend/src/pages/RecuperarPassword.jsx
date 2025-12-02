@@ -14,7 +14,7 @@ const RecoverPassword = () => {
 
     try {
       const { data } = await axios.post(
-        "http://localhost:3000/auth/recuperar-password",
+        `${import.meta.env.VITE_API_URL}/auth/recuperar-password`,
         { email }
       );
 

@@ -7,6 +7,8 @@ import userAdminRoutes from "./routes/userAdmin.routes.js";
 import cors from "cors";
 import dotenv from "dotenv";
 import mongoose from "mongoose";
+import { fileURLToPath } from "url";
+import { dirname, join } from "path";
 /**
  * @description Configuraciones
  * @access Public
@@ -15,6 +17,7 @@ import mongoose from "mongoose";
 dotenv.config();
 const app = express();
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 /**
  * @description Configuraciones cors
@@ -22,7 +25,7 @@ app.use(express.json());
  */
 
 //configurar cors
-const whitelist = ['http://localhost:3000', 'http://localhost:5173', 'http://localhost:5174']; // Lista blanca de dominios permitidos
+const whitelist = ['http://localhost:3000', 'http://localhost:5173', 'http://192.168.0.108:5173']; // Lista blanca de dominios permitidos
 //Opcion privada
 const corsOptions = {
   origin: function (origin, callback) {
@@ -35,8 +38,15 @@ const corsOptions = {
 };
 app.use(cors(corsOptions));
 
+
 // Opcion publica
 //app.use(cors());
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
+app.use("/uploads", express.static(join(__dirname, "uploads")));
+
 
 /**
  * @description Conectar a la base de datos
@@ -58,7 +68,8 @@ app.use("/adopciones", adopcionesRoutes);
 app.use("/mensajes", mensajesRoutes);
 
 
-app.listen(process.env.PORT || 3000, ()=>console.log("Server running"));
+
+app.listen(process.env.PORT || 3000, "0.0.0.0", ()=>console.log("Server running"));
 
 
 

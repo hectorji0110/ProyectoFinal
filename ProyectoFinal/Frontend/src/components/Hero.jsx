@@ -7,14 +7,14 @@ const Hero = () => {
 const navigate = useNavigate();
 
   return (
-    <section className="pt-24 pb-12 w-full h-full flex items-center justify-center bg-gradient-to-r from-orange-100 to-blue-100 dark:from-gray-600 dark:to-gray-800">
+    <section className="pt-26 pb-12 w-full h-full flex items-center justify-center bg-gradient-to-r from-orange-100 to-blue-100 dark:from-gray-600 dark:to-gray-800">
       <div className="container mx-auto px-6 grid md:grid-cols-2 gap-10 items-center">
         
         {/* Texto principal */}
         <div className="text-left">
           <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold text-gray-900 dark:text-white leading-tight">
             Encuentra a tu
-            <span className="block text-orange-600 dark:text-orange-400">
+            <span className="block text-orange-500 dark:text-orange-500">
               nuevo mejor amigo
             </span>
           </h1>
@@ -25,7 +25,7 @@ const navigate = useNavigate();
           </p>
 
           <div className="mt-8 flex flex-wrap gap-4">
-            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={() => navigate("/ver-mascotas")}>
+            <Button className="bg-orange-500 hover:bg-orange-600 text-white" onClick={() => navigate("/lista-mascotas")}>
               Ver Mascotas
             </Button>
 

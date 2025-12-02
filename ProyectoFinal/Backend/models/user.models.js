@@ -50,18 +50,7 @@ const userSchema = new mongoose.Schema({
     },
   contrasena: {
     type: String, required: true,
-      validate: {
-        validator: function (v) {
-          // Validar solo si la contraseña fue modificada (evita validar el hash)
-          if (this.isModified("contrasena")) {
-            const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d@$!%*?&]{6,}$/;
-            return passwordRegex.test(v);
-          }
-          return true;
-        },
-        message:
-          "La contraseña debe tener al menos 6 caracteres, incluyendo letras y números"
-      }
+      
     },// guardar hashed
     telefono: {
       type: String,
@@ -82,15 +71,7 @@ const userSchema = new mongoose.Schema({
   rol: { type: String, enum: ["usuario", "admin"], default: "usuario" },
   activo: { type: Boolean, default: true }, // 👈 este campo es clave
   fecha_registro: { type: Date, default: Date.now },
-  foto_perfil: {
-      type: String,
-      validate: {
-        validator: function (v) {
-          return !v || validator.isURL(v, { protocols: ["http", "https"], require_protocol: true });
-        },
-        message: "La URL de la foto de perfil no es válida"
-      }
-    }, // URL o path
+  foto_perfil: [{ type: String }], // array de URLs
   resetPasswordToken: { type: String, default: null },
   resetPasswordExpire: { type: Date, default: null },
   borradoEn: { type: Date, default: null }, // 👈 campo para soft delete

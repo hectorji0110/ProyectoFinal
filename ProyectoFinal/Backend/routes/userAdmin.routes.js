@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { getAllUsers, getUserById, createUser, updateUser, deleteUser } from '../controllers/userAdmin.controller.js';
+import { getAllUsers, getUserById, createUser, updateUser, deleteUser, restoreUser } from '../controllers/userAdmin.controller.js';
 import { verifyToken, isAdminOrOwner } from "../middleware/auth.middleware.js";
 
 const router = Router();
@@ -59,5 +59,6 @@ router.patch("/:id", verifyToken, isAdminOrOwner, updateUser);
  */
 // Ruta para eliminar un usuario (soft delete)
 router.delete('/:id', verifyToken, isAdminOrOwner, deleteUser);
+router.patch("/restore/:id", restoreUser);
 
 export default router;

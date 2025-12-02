@@ -1,5 +1,6 @@
 import { Router } from 'express';
-import { getAllMascotas, getMascotaById, createMascota, updateMascota, deleteMascota } from '../controllers/mascotas.controller.js';
+import { getAllMascotas, getMascotaById, createMascota, updateMascota, deleteMascota, getMascotasByUser, restaurarMascota } from '../controllers/mascotas.controller.js';
+import { upload } from "../middleware/upload.js";
 import { verifyToken } from '../middleware/auth.middleware.js';
 
 const router = Router();
@@ -14,7 +15,7 @@ const router = Router();
  */
 // Ruta para traer todos las mascotas
 router.get('/', getAllMascotas);
-
+router.get("/mis-publicaciones", verifyToken, getMascotasByUser);
 /**
  * @route GET /mascotas/:id
  * @description Obtiene una mascota por ID
@@ -35,7 +36,7 @@ router.get('/:id', getMascotaById);
  * @returns {Object} - Retorna la mascota creada
  */
 // Ruta para crear una nueva mascota
-router.post('/', verifyToken, createMascota);
+router.post('/', verifyToken, upload.single('foto'), createMascota);
 
 /**
  * @route PATCH /mascotas/:id
@@ -46,7 +47,7 @@ router.post('/', verifyToken, createMascota);
  * @returns {Object} - Retorna la mascota actualizada
  */
 // Ruta para actualizar una mascota
-router.patch('/:id', verifyToken, updateMascota);
+router.patch('/:id', verifyToken, upload.single('foto'), updateMascota);
 
 
 /**
@@ -59,5 +60,9 @@ router.patch('/:id', verifyToken, updateMascota);
  */
 // Ruta para eliminar una mascota (soft delete)D
 router.delete('/:id', verifyToken, deleteMascota);
+router.patch("/restore/:id",restaurarMascota);
+
+
+
 
 export default router;

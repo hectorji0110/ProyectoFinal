@@ -1,6 +1,7 @@
 import { Router } from 'express';
-import { login, register, solicitarRecuperacion, restablecerContrasena } from '../controllers/auth.controller.js';
+import { login, register, solicitarRecuperacion, restablecerContrasena, cambiarContrasena, obtenerPerfil, actualizarPerfil } from '../controllers/auth.controller.js';
 import { logout, verifyToken } from "../middleware/auth.middleware.js";
+import { upload } from "../middleware/upload.js";
 
 const router = Router();
 /**
@@ -37,5 +38,8 @@ router.post('/login', login);
 router.post("/logout", verifyToken, logout);
 router.post("/recuperar-password", solicitarRecuperacion);
 router.post("/restablecer-password/:token", restablecerContrasena);
+router.patch("/cambiar-password", verifyToken, cambiarContrasena);
+router.get("/perfil", verifyToken, obtenerPerfil);
+router.patch("/perfil", verifyToken,upload.single("fotoPerfil"), actualizarPerfil);
 
 export default router;

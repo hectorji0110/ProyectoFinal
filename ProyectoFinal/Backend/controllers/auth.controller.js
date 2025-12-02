@@ -76,7 +76,7 @@ export const login = async (req, res) => {
 
     // 🔹 Aquí se genera el token
     const token = jwt.sign(
-      { id: user._id, rol: user.rol },
+      { id: user._id, rol: user.rol, nombre: user.nombre },
       process.env.JWT_SECRET,
       { expiresIn: "3h" } // duración del token
     );
@@ -113,7 +113,7 @@ export const solicitarRecuperacion = async (req, res) => {
     await user.save();
 
     // URL que se le envía al usuario
-    const url = `http://localhost:5173/restablecer-password/${token}`;
+    const url = `${process.env.FRONTEND_URL}/restablecer-password/${token}`;
 
     // Enviar correo
     const transporter = nodemailer.createTransport({
@@ -193,5 +193,105 @@ export const restablecerContrasena = async (req, res) => {
   } catch (error) {
     console.error("Error restablecerContrasena:", error);
     return res.status(500).json({ msg: "Error al restablecer la contraseña" });
+  }
+};
+
+export const cambiarContrasena = async (req, res) => {
+  try {
+    const userId = req.user.id; // viene del verifyToken
+    const { nuevaPassword, confirmarPassword } = req.body;
+
+    if (!nuevaPassword || !confirmarPassword) {
+      return res.status(400).json({ msg: "Todos los campos son obligatorios" });
+    }
+
+    if (nuevaPassword.length < 6) {
+      return res.status(400).json({ msg: "La contraseña debe tener al menos 6 caracteres" });
+    }
+
+    if (nuevaPassword !== confirmarPassword) {
+      return res.status(400).json({ msg: "Las contraseñas no coinciden" });
+    }
+
+    // Hashear nueva contraseña
+    const salt = await bcrypt.genSalt(10);
+    const hashed = await bcrypt.hash(nuevaPassword, salt);
+
+    await User.findByIdAndUpdate(userId, { contrasena: hashed });
+
+    res.json({ msg: "Contraseña actualizada correctamente" });
+  } catch (error) {
+    console.error("Error cambiando contraseña:", error);
+    res.status(500).json({ msg: "Error al cambiar la contraseña" });
+  }
+};
+
+export const obtenerPerfil = async (req, res) => {
+  try {
+    // req.user ya viene del verifyToken
+    const userId = req.user.id;
+
+    // Buscar usuario real con info completa
+    const usuario = await User.findById(userId).select("-contrasena");
+
+    if (!usuario) {
+      return res.status(404).json({ msg: "Usuario no encontrado" });
+    }
+
+    return res.json({
+      msg: "Perfil obtenido correctamente",
+      usuario: {
+        id: usuario._id,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        email: usuario.email,
+        rol: usuario.rol,
+        fechaRegistro: usuario.fecha_registro,
+        foto_perfil: usuario.foto_perfil,
+      },
+    });
+  } catch (error) {
+    console.error("Error obteniendo perfil:", error);
+    return res.status(500).json({ msg: "Error interno del servidor" });
+  }
+};
+
+
+export const actualizarPerfil = async (req, res) => {
+  try {
+    const userId = req.user.id;
+    const { nombre, apellido } = req.body;
+
+    const usuario = await User.findById(userId);
+
+    if (!usuario) {
+      return res.status(404).json({ msg: "Usuario no encontrado" });
+    }
+
+    if (nombre) usuario.nombre = nombre;
+    if (apellido) usuario.apellido = apellido;
+
+    // 👇 si viene una foto en la petición
+    if (req.file) {
+      usuario.foto_perfil = [`/uploads/${req.file.filename}`]; // lo guardamos como array
+    }
+
+    await usuario.save();
+
+    return res.json({
+      msg: "Perfil actualizado correctamente",
+      usuario: {
+        id: usuario._id,
+        nombre: usuario.nombre,
+        apellido: usuario.apellido,
+        email: usuario.email,
+        rol: usuario.rol,
+        fechaRegistro: usuario.fecha_registro,
+        foto_perfil: usuario.foto_perfil,
+      },
+    });
+  } catch (error) {
+    console.error("Error actualizando perfil:", error);
+    return res.status(500).json({ msg: "Error interno del servidor" });
   }
 };

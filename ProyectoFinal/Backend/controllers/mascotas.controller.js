@@ -15,13 +15,15 @@ import User from "../models/user.models.js";
  */
 export const createMascota = async (req, res) => {
   try {
-    // req.user.id viene del verifyToken
+
+    // id del usuario autenticado
     const creadorId = req.user.id;
 
     // body con datos de la mascota
     const data = {
       ...req.body,
-      id_usuario: creadorId
+      id_usuario: creadorId,
+      foto: req.file ? [`/uploads/${req.file.filename}`] : null
     };
 
     const mascota = new Mascota(data);
@@ -60,14 +62,38 @@ export const updateMascota = async (req, res) => {
       return res.status(403).json({ msg: "No tienes permisos para actualizar esta mascota" });
     }
 
-    const actualizado = await Mascota.findByIdAndUpdate(id, req.body, { new: true });
+    // CREA EL OBJETO DONDE SE GUARDARÁN LOS DATOS
+    const updateData = {};
+
+    // CAMPOS DE TEXTO
+    if (req.body.nombre) updateData.nombre = req.body.nombre;
+    if (req.body.edad) updateData.edad = req.body.edad;
+    if (req.body.tipo) updateData.tipo = req.body.tipo;
+    if (req.body.raza) updateData.raza = req.body.raza;
+    if (req.body.genero) updateData.genero = req.body.genero;
+    if (req.body.tamano) updateData.tamano = req.body.tamano;
+    if (req.body.ubicacion) updateData.ubicacion = req.body.ubicacion;
+    if (req.body.descripcion) updateData.descripcion = req.body.descripcion;
+
+    // ESTADO (muy importante)
+    if (req.body.estado !== undefined) {
+      // backend recibe "true"/"false" como textos
+      updateData.estado = req.body.estado === "true" || req.body.estado === true;
+    }
+
+    // FOTO (solo si el usuario sube una)
+    if (req.file) {
+      updateData.foto = `/uploads/${req.file.filename}`;
+    }
+
+    const actualizado = await Mascota.findByIdAndUpdate(id, updateData, { new: true });
+
     res.json(actualizado);
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "Error al actualizar la mascota" });
   }
 };
-
 /**
  * @route DELETE /mascotas/:id
  * @access Privado (admin o dueño de la mascota)
@@ -125,12 +151,10 @@ export const deleteMascota = async (req, res) => {
 export const getAllMascotas = async (req, res) => {
   try {
     const { nombre, tipo, raza, genero, tamano, ubicacion } = req.query;
-let filter = {}; // excluir mascotas borradas
+let filter = {borrado: false}; // excluir mascotas borradas
 if (req.query.borradas === "true") {
   filter.borrado = true;
-} else {
-  filter.borrado = false; // por defecto solo activas
-}
+} 
  // Buscar por nombre del usuario (si se proporciona)
     if (nombre) {
       const usuarios = await User.find({ nombre: new RegExp(nombre, "i") }).select("_id");
@@ -144,23 +168,28 @@ if (req.query.borradas === "true") {
   if (tamano) filter.tamano = tamano;
   if (ubicacion) filter.ubicacion = new RegExp(ubicacion, "i");
 
-    // Configuración de paginación
-    const options = {
-      page: parseInt(req.query.page) || 1,
-      limit: 10,
-      sort: { createdAt: -1 },
-      populate: [
-        { path: "id_usuario", select: "nombre email" }
-      ],
-      lean: true,
-    };
+    // PAGINACIÓN
+    const page = parseInt(req.query.page) || 1;
+    const limit = 6;
+    const skip = (page - 1) * limit;
 
+    const docs = await Mascota.find(filter)
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
 
-    const mascotas = await Mascota.paginate(filter, options);
-    res.json(mascotas);
+    const total = await Mascota.countDocuments(filter);
+
+    res.json({
+      docs,
+      page,
+      totalPages: Math.ceil(total / limit),
+      total
+    });
+
   } catch (error) {
-    console.error("❌ Error al obtener adopciones:", error);
-    res.status(500).json({ msg: "Error al obtener las mascotas" });
+    console.log(error);
+    res.status(500).json({ msg: "Error obteniendo mascotas" });
   }
 };
 
@@ -187,5 +216,55 @@ export const getMascotaById = async (req, res) => {
   } catch (error) {
     console.error(error);
     res.status(500).json({ msg: "Error al obtener la mascota" });
+  }
+};
+
+
+export const getMascotasByUser = async (req, res) => {
+ try {
+    const userId = req.user.id;
+
+    // Pagina actual y límite por página
+    const page = parseInt(req.query.page) || 1;
+    const limit = 6; // puedes cambiarlo
+
+    const skip = (page - 1) * limit;
+
+    // Mascotas del usuario
+    const mascotas = await Mascota.find({ 
+      id_usuario: userId,
+      borrado: false
+    })
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(limit);
+
+    // Total de mascotas del usuario (para saber cuántas páginas hay)
+    const total = await Mascota.countDocuments({
+      id_usuario: userId,
+      borrado: false
+    });
+
+    res.json({
+      mascotas,
+      total,
+      page,
+      totalPages: Math.ceil(total / limit),
+    });
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({ msg: "Error obteniendo publicaciones" });
+  }
+};
+
+
+export const restaurarMascota = async (req, res) => {
+  try {
+    const { id } = req.params;
+    await Mascota.findByIdAndUpdate(id, { borrado: false });
+    res.json({ message: "Mascota restaurada correctamente" });
+  } catch (error) {
+    res.status(500).json({ message: "Error restaurando mascota", error });
   }
 };
