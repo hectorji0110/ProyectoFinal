@@ -2,88 +2,127 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { Button } from "./ui/Button";
 import { useNavigate } from "react-router-dom";
-
+import Skeleton from "../components/Skeleton";
+/**
+ * PetList
+ *
+ * Componente encargado de mostrar un listado de mascotas disponibles
+ * para adopción. Obtiene la información desde el backend usando Axios.
+ *
+ * FUNCIONALIDAD:
+ * - Realiza una petición GET al endpoint `/mascotas`.
+ * - Muestra un máximo de 6 mascotas en la vista inicial.
+ * - Permite navegar al detalle de cada mascota si el usuario está autenticado.
+ * - Si el usuario no tiene token, es redirigido al login.
+ * - Utiliza Skeleton para mostrar un loader mientras se cargan las mascotas.
+ *
+ * ESTADOS:
+ * - pets: Lista de mascotas obtenidas desde la API.
+ *
+ * @component
+ * @returns {JSX.Element} Sección con las tarjetas de mascotas disponibles.
+ */
 const PetList = () => {
+  // Lista de mascotas obtenidas desde el backend
   const [pets, setPets] = useState([]);
+  // Token almacenado en el navegador para validar acceso a detalles
   const token = localStorage.getItem("token");
+  // Hook de navegación de React Router
   const navigate = useNavigate();
-
+  // Estado para controlar el loader skeleton
+  const [loading, setLoading] = useState(true);
+  /**
+   * Se ejecuta al montar el componente y realiza la petición
+   * para obtener las mascotas disponibles.
+   */
   useEffect(() => {
+    /**
+     * Petición al backend para obtener las mascotas.
+     * Se usa un try/catch para capturar posibles errores.
+     */
     const fetchPets = async () => {
       try {
+        // activar skeleton
+        setLoading(true);
         const res = await axios.get(`${import.meta.env.VITE_API_URL}/mascotas`);
         console.log("BACKEND:", res.data);
+        // Retardo de 300ms para que se note el skeleton
+        await new Promise((resolve) => setTimeout(resolve, 300));
+        // Guardamos solo el array de documentos
         setPets(res.data.docs);
       } catch (error) {
         console.log("Error obteniendo mascotas:", error);
+      } finally {
+        // finalizamos la carga
+        setLoading(false);
       }
     };
-
     fetchPets();
   }, []);
-
-  
-
-
-
   return (
     <section className="py-16 bg-gradient-to-b from-orange-100 to-blue-100 dark:from-gray-600 dark:to-gray-800">
       <div className="container mx-auto px-6">
+        {/* Título principal */}
         <h2 className="text-3xl font-bold text-center text-gray-900 dark:text-white mb-6">
           Mascotas Disponibles
         </h2>
+        {/* Subtítulo descriptivo */}
         <p className="text-gray-600 dark:text-gray-300 mt-2 mb-12 text-center">
           Conoce a estos adorables amigos que buscan un hogar
         </p>
-
+        {/* GRID de tarjetas */}
         <div className="grid md:grid-cols-3 gap-10">
-          {pets.slice(0, 6).map((pet) => (
-            <div
-              key={pet._id}
-              className="rounded-xl shadow-lg overflow-hidden bg-white dark:bg-gray-800"
-            >
-              <img
-                  src={pet.foto ? encodeURI(`${import.meta.env.VITE_API_URL}${pet.foto}`) : "/placeholder.png"}
-                  alt={pet.nombre}
-                  className="w-full h-56 object-cover"
-                />
-
-              <div className="p-4">
-                <h3 className="text-xl font-bold text-gray-800 dark:text-white">
-                  {pet.nombre}
-                </h3>
-
-                <p className="text-sm text-gray-500 dark:text-gray-300">
-                  {pet.edad} años
-                </p>
-
-                <p className="text-sm text-orange-600 dark:text-orange-400">
-                  {pet.tipo}
-                </p>
-
-                <p className="text-sm text-gray-500 dark:text-gray-300 mt-2">
-                  {pet.ubicacion}
-                </p>
-
-                <Button
-                  className="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white cursor-pointer"
-                  onClick={() => {
-                    if (token) {
-                      navigate(`/mascota/${pet._id}`); // ir a detalle de la mascota
-                    } else {
-                      navigate("/login"); // si no está logueado, al login
-                    }
-                  }}
+          {loading
+            ? Array(6)
+                .fill(0)
+                .map((_, i) => <Skeleton key={i} />) // Skeleton para 6 tarjetas
+            : pets.slice(0, 6).map((pet) => (
+                <div
+                  key={pet._id}
+                  className="rounded-xl shadow-lg overflow-hidden bg-white dark:bg-gray-800"
                 >
-                  Ver Detalles
-                </Button>
-              </div>
-            </div>
-          ))}
+                  <img
+                    src={
+                      pet.foto
+                        ? encodeURI(
+                            `${import.meta.env.VITE_API_URL}${pet.foto}`
+                          )
+                        : "/placeholder.png"
+                    }
+                    alt={pet.nombre}
+                    className="w-full h-56 object-cover"
+                  />
+                  <div className="p-4">
+                    <h3 className="text-xl font-bold text-gray-800 dark:text-white">
+                      {pet.nombre}
+                    </h3>
+                    <p className="text-sm text-gray-500 dark:text-gray-300">
+                      {pet.edad} años
+                    </p>
+                    <p className="text-sm text-orange-600 dark:text-orange-400">
+                      {pet.tipo}
+                    </p>
+                    <p className="text-sm text-gray-500 dark:text-gray-300 mt-2">
+                      {pet.ubicacion}
+                    </p>
+                    <Button
+                      className="mt-4 w-full bg-orange-500 hover:bg-orange-600 text-white cursor-pointer"
+                      onClick={() => {
+                        if (token) {
+                          navigate(`/mascota/${pet._id}`);
+                        } else {
+                          navigate("/login");
+                        }
+                      }}
+                    >
+                      Ver Detalles
+                    </Button>
+                  </div>
+                </div>
+              ))}
         </div>
       </div>
     </section>
   );
 };
-
 export default PetList;

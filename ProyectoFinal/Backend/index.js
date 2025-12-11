@@ -1,7 +1,6 @@
-import express from "express";//importamos express
+import express from "express"; //importamos express
 import authRoutes from "./routes/auth.routes.js";
 import mascotasRoutes from "./routes/mascotas.routes.js";
-import adopcionesRoutes from "./routes/adopciones.routes.js";
 import mensajesRoutes from "./routes/mensajes.routes.js";
 import userAdminRoutes from "./routes/userAdmin.routes.js";
 import cors from "cors";
@@ -10,52 +9,68 @@ import mongoose from "mongoose";
 import { fileURLToPath } from "url";
 import { dirname, join } from "path";
 /**
- * @description Configuraciones
- * @access Public
- * @returns {Object} - Objeto con el mensaje dexito
+ *
+ * @description Configuración principal del servidor Express, conexión a MongoDB,
+ * manejo de CORS, rutas principales y configuración de archivos estáticos.
+ *
+ */
+//configuraciones iniciales del servidor
+/**
+ * @description Carga las variables de entorno desde .env
  */
 dotenv.config();
+/**
+ * @description Inicialización del servidor Express
+ */
 const app = express();
+/**
+ * @description Habilita el uso de JSON y formularios (body parser)
+ */
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-
 /**
  * @description Configuraciones cors
  * @access solo los que esten en la lista blanca
  */
-
 //configurar cors
-const whitelist = ['http://localhost:3000', 'http://localhost:5173', 'http://192.168.0.108:5173']; // Lista blanca de dominios permitidos
-//Opcion privada
+const whitelist = [
+  "http://localhost:3000",
+  "http://localhost:5173",
+  "http://192.168.0.108:5173",
+]; // Lista blanca de dominios permitidos
+/**
+ * @constant corsOptions
+ * @description Configuración del middleware CORS con verificación
+ * de origen antes de permitir la solicitud.
+ */
 const corsOptions = {
   origin: function (origin, callback) {
+    // Verificar si el origen de la solicitud pertenece a la lista blanca
     if (whitelist.indexOf(origin) !== -1 || !origin) {
+      // Permitir el origen de la solicitud
       callback(null, true);
     } else {
-      callback(new Error('No permitido por CORS'));
+      // Denegar el origen de la solicitud
+      callback(new Error("No permitido por CORS"));
     }
-  }
+  },
 };
+// Habilitar CORS
 app.use(cors(corsOptions));
-
-
 // Opcion publica
 //app.use(cors());
-
+// Configuración de archivos estáticos
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
-
 app.use("/uploads", express.static(join(__dirname, "uploads")));
-
-
+// Conectar a la base de datos
 /**
  * @description Conectar a la base de datos
  * @access Public
  * @returns {Object} - Objeto con el mensaje dexito
  */
-mongoose.connect(process.env.MONGO_URI).then(()=>console.log("Mongo OK"));
-
-
+mongoose.connect(process.env.MONGO_URI).then(() => console.log("Mongo OK"));
+// Rutas principales
 /**
  * @description Rutas
  * @access Public
@@ -64,37 +79,11 @@ mongoose.connect(process.env.MONGO_URI).then(()=>console.log("Mongo OK"));
 app.use("/auth", authRoutes);
 app.use("/admin/users", userAdminRoutes); // Para panel admin
 app.use("/mascotas", mascotasRoutes);
-app.use("/adopciones", adopcionesRoutes);
 app.use("/mensajes", mensajesRoutes);
-
-
-
-app.listen(process.env.PORT || 3000, "0.0.0.0", ()=>console.log("Server running"));
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*const app = express(); // Crear el servidor ejecutando express
-const port = 3000;//crear un puerto
-app.use(express.json());// Middleware para parsear JSON
-// Ruta principal
-app.get('/', (req, res) => {
-  res.send('Bienvenido a la API con Express');
-});
-// 📌 Montamos las rutas de artículos
-app.use("/api/articulos", articulosRoutes);
-//iniciar el servidor
-app.listen(port, () => {
-  console.log(`Servidor corriendo en http://localhost:${port}`);
-});*/
+// Iniciar el servidor
+/**
+ * @description Inicia el servidor en el puerto indicado en .env
+ */
+app.listen(process.env.PORT || 3000, "0.0.0.0", () =>
+  console.log("Server running")
+);

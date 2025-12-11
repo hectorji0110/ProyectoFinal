@@ -1,62 +1,73 @@
 import React, { useState } from "react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-
+/**
+ * Página de Recuperación de Contraseña
+ *
+ * Esta vista permite a un usuario solicitar el restablecimiento de su contraseña.
+ * El usuario ingresa su email, y si existe en el sistema, se envía un correo
+ * con un enlace para continuar con el proceso de recuperación.
+ *
+ */
 const RecoverPassword = () => {
   const navigate = useNavigate();
-
+  // Estados del componente
   const [email, setEmail] = useState("");
   const [msg, setMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
-
+  /**
+   * handleSubmit()
+   *
+   * Maneja el envío del formulario.
+   * Envía el email al backend mediante axios.
+   * Si la petición es exitosa, muestra mensaje de confirmación.
+   * Si hay error, muestra mensaje de error devuelto por el backend.
+   */
   const handleSubmit = async (e) => {
     e.preventDefault();
-
     try {
       const { data } = await axios.post(
         `${import.meta.env.VITE_API_URL}/auth/recuperar-password`,
         { email }
       );
-
       setMsg(data.msg || "Se ha enviado un correo con instrucciones");
       setErrorMsg("");
-
-      // Opcional: redirigir al login después de unos segundos
+      // Redirección opcional al login después de unos segundos
       setTimeout(() => {
         navigate("/login");
       }, 2500);
     } catch (error) {
       console.error("Error recover:", error);
-
       setErrorMsg(
         error.response?.data?.msg ||
           "No se pudo enviar el correo, intenta nuevamente."
       );
     }
   };
-
   return (
     <div className="min-h-screen flex items-center justify-center bg-gradient-to-b from-white to-blue-100 dark:from-gray-900 dark:to-gray-800 px-4">
       <div className="w-full max-w-md bg-white dark:bg-gray-900 rounded-2xl shadow-lg p-8">
-
-        {/* Ícono */}
+        {/* Ícono principal */}
         <div className="w-20 h-20 bg-orange-500 rounded-full mx-auto flex items-center justify-center text-4xl">
-         <img src="../src/assets/material-symbols-light--map-pin-heart-rounded.svg" alt="Buscar" className="w-16 h-16 object-contain" />
+          <img
+            src="../src/assets/material-symbols-light--map-pin-heart-rounded.svg"
+            alt="Buscar"
+            className="w-16 h-16 object-contain"
+          />
         </div>
-
         <h2 className="text-2xl font-bold text-center text-gray-900 dark:text-white mt-4">
           Recuperar Contraseña
         </h2>
-
         <p className="text-center text-gray-600 dark:text-gray-300 mb-6">
-          Ingresa tu correo y te enviaremos un enlace para restablecer tu contraseña.
+          Ingresa tu correo y te enviaremos un enlace para restablecer tu
+          contraseña.
         </p>
-
-        {/* Mensajes */}
+        {/* Mensajes de estados */}
         {msg && <p className="text-green-600 text-center mb-3">{msg}</p>}
-        {errorMsg && <p className="text-red-500 text-center mb-3">{errorMsg}</p>}
-
-        {/* Formulario */}
+        {errorMsg && (
+          <p className="text-red-500 text-center mb-3">{errorMsg}</p>
+        )}
+        {/* Formulario de recuperación */}
         <form onSubmit={handleSubmit} className="space-y-5">
           <div>
             <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
@@ -71,7 +82,6 @@ const RecoverPassword = () => {
               required
             />
           </div>
-
           <button
             type="submit"
             className="w-full bg-orange-500 hover:bg-orange-600 text-white py-3 rounded-lg font-semibold"
@@ -79,7 +89,7 @@ const RecoverPassword = () => {
             Enviar instrucciones
           </button>
         </form>
-
+        {/* Enlace a login */}
         <p className="mt-4 text-sm text-gray-600 dark:text-gray-300 text-center">
           ¿Ya tienes cuenta?{" "}
           <span
@@ -93,5 +103,4 @@ const RecoverPassword = () => {
     </div>
   );
 };
-
 export default RecoverPassword;
