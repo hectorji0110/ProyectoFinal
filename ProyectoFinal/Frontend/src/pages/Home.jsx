@@ -4,7 +4,7 @@ import HowItWorks from "../components/comoFunciona";
 import PublishPetCTA from "../components/publicarMascota";
 /**
  * Pagina de Home
- * ----------------
+ *
  * Este componente representa la página principal del sitio.
  * Su función es renderizar las secciones principales de la aplicación,
  * incluyendo:

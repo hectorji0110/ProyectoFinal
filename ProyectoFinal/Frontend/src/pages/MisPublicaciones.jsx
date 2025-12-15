@@ -141,7 +141,7 @@ const MisPublicaciones = () => {
   };
   /**
    * Abrir modal de edición
-   * -------------------------
+   *
    * Carga los datos de la mascota seleccionada en el formulario de edición.
    *
    * @param {Object} pet - Mascota seleccionada.

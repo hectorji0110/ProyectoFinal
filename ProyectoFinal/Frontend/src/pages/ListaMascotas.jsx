@@ -5,7 +5,6 @@ import { useNavigate } from "react-router-dom";
 import Loader from "../components/Loader";
 import SelectCustom from "../components/ui/SelectCustom";
 import Skeleton from "../components/Skeleton";
-
 /**
  * Pagina de ListaMascotas
  *
@@ -47,7 +46,7 @@ const ListaMascotas = () => {
    */
   const fetchPets = async (query = {}) => {
     try {
-      query.page = page; // 👈 agregar página
+      query.page = page; //  agregar página
       const params = new URLSearchParams(query).toString();
       const res = await axios.get(
         `${import.meta.env.VITE_API_URL}/mascotas?${params}`

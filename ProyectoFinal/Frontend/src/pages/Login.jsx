@@ -7,7 +7,7 @@ import { Button } from "../components/ui/Button";
 import { Eye, EyeOff } from "lucide-react";
 /**
  * Pagina de Login
- * -------------------
+ * 
  * Muestra el formulario de inicio de sesión y maneja:
  *  - Validación de email
  *  - Validación de contraseña segura

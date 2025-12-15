@@ -90,7 +90,7 @@ const Register = () => {
     }
     // Realizar el registro del usuario
     try {
-      const { data } = await axios.post("http://localhost:3000/auth/register", {
+      const { data } = await axios.post(`${import.meta.env.VITE_API_URL}/auth/register`, {
         nombre: name,
         apellido: lastName,
         email,
