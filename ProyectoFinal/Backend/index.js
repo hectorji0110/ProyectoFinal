@@ -36,7 +36,7 @@ app.use(express.urlencoded({ extended: true }));
 const whitelist = [
   "http://localhost:3000",
   "http://localhost:5173",
-  "http://192.168.0.108:5173",
+  "http://192.1688.0.10:5173",
 ]; // Lista blanca de dominios permitidos
 /**
  * @constant corsOptions

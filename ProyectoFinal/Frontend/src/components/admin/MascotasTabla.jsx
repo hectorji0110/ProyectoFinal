@@ -617,13 +617,13 @@ const MascotasTabla = () => {
                   setModalEditar(false);
                   resetEditForm();
                 }}
-                className="px-3 py-1 bg-gray-400 text-white rounded"
+                className="px-3 py-1 bg-gray-400 text-white rounded cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 onClick={guardarEdicion}
-                className="px-3 py-1 bg-blue-600 text-white rounded"
+                className="px-3 py-1 bg-blue-600 text-white rounded cursor-pointer"
               >
                 Guardar
               </button>
@@ -747,13 +747,13 @@ const MascotasTabla = () => {
                   setModalCrear(false);
                   resetNewForm();
                 }}
-                className="px-3 py-1 bg-gray-400 text-white rounded"
+                className="px-3 py-1 bg-gray-400 text-white rounded cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 onClick={crearMascota}
-                className="px-3 py-1 bg-green-600 text-white rounded"
+                className="px-3 py-1 bg-green-600 text-white rounded cursor-pointer"
               >
                 Crear
               </button>

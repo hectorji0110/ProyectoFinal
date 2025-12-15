@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
 import axios from "axios";
+import { Eye, EyeOff } from "lucide-react";
 /**
  * Página de Restablecimiento de Contraseña
  *
@@ -15,6 +16,7 @@ const ResetPassword = () => {
   const { token } = useParams();
   const navigate = useNavigate();
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [msg, setMsg] = useState("");
   const [errorMsg, setErrorMsg] = useState("");
   // Regex para validar contraseña segura:
@@ -73,17 +75,27 @@ const ResetPassword = () => {
         {errorMsg && <p className="text-red-600 mt-2">{errorMsg}</p>}
         <form onSubmit={handleSubmit} className="space-y-5 mt-4">
           <div>
-            <label className="text-gray-700 dark:text-gray-300 font-medium">
-              Nueva Contraseña
+            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
+              Contraseña
             </label>
-            <input
-              type="password"
-              className="w-full px-4 py-2 rounded-lg border dark:border-gray-700"
-              placeholder="*******"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
-              required
-            />
+            <div className="relative">
+              <input
+                type={showPassword ? "text" : "password"}
+                className="w-full px-4 py-2 pr-12 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+                placeholder="*******"
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+                required
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-white"
+                aria-label="Mostrar u ocultar contraseña"
+              >
+                {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+              </button>
+            </div>
           </div>
           <button
             type="submit"

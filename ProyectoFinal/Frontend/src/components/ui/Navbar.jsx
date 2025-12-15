@@ -36,6 +36,10 @@ const Navbar = () => {
     navigate("/login");
     toast.success("¡Hasta pronto!");
   };
+  const closeDropdown = () => {
+    setIsDropdownOpen(false);
+    setIsOpen(false); // opcional: también cierra menú mobile
+  };
   // Rutas donde NO debe aparecer menú / hamburguesa / botones login register
   const hideMenu =
     location.pathname === "/login" ||
@@ -77,25 +81,28 @@ const Navbar = () => {
                 <Link
                   className="hover:text-orange-500 px-4 py-2"
                   to="/lista-mascotas"
+                  onClick={closeDropdown}
                 >
                   Lista de Mascotas
                 </Link>
                 <Link
                   className="hover:text-orange-500 px-4 py-2"
                   to="/publicar-mascota"
+                  onClick={closeDropdown}
                 >
                   Publicar Mascota
                 </Link>
                 <Link
                   className="hover:text-orange-500 px-4 py-2"
                   to="/mis-publicaciones"
+                  onClick={closeDropdown}
                 >
                   Mis Publicaciones
                 </Link>
                 {/* Menu de configuración (engranaje) */}
                 <div className="relative px-4">
                   <button
-                    onClick={() => setIsDropdownOpen(!isDropdownOpen)}
+                    onClick={toggleDropdown}
                     className="p-2 rounded-full hover:bg-gray-100 bg-gray-300 dark:hover:bg-gray-700  transition cursor-pointer"
                   >
                     <img
@@ -119,30 +126,35 @@ const Navbar = () => {
                       </span>
                       <Link
                         to="/perfil"
+                        onClick={closeDropdown}
                         className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                       >
                         Mi Perfil
                       </Link>
                       <Link
                         to="/seguridad"
+                        onClick={closeDropdown}
                         className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                       >
                         Seguridad
                       </Link>
                       <Link
                         to="/contacto"
+                        onClick={closeDropdown}
                         className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                       >
                         Contacto
                       </Link>
                       <Link
                         to="/politica-privacidad"
+                        onClick={closeDropdown}
                         className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                       >
                         Privacidad
                       </Link>
                       <Link
                         to="/ayuda"
+                        onClick={closeDropdown}
                         className="block px-4 py-2 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700"
                       >
                         Ayuda
@@ -153,7 +165,10 @@ const Navbar = () => {
                 {/* Boton de admin solo si el usuario es admin*/}
                 {isLoggedIn && user?.rol === "admin" && (
                   <button
-                    onClick={() => navigate("/admin")}
+                    onClick={() => {
+                      closeDropdown();
+                      navigate("/admin");
+                    }}
                     className="bg-orange-500 text-white px-4 py-2 rounded-md hover:bg-orange-600 transition cursor-pointer"
                   >
                     Admin
@@ -161,7 +176,10 @@ const Navbar = () => {
                 )}
                 {/* Cerrar Sesión */}
                 <button
-                  onClick={handleLogout}
+                  onClick={() => {
+                    closeDropdown();
+                    handleLogout();
+                  }}
                   className="bg-red-500 text-white px-4 py-2 rounded-lg hover:bg-red-600 cursor-pointer"
                 >
                   Cerrar Sesión
@@ -173,12 +191,14 @@ const Navbar = () => {
                 <Link
                   to="/login"
                   className="border border-orange-500 text-orange-500 hover:bg-orange-100 dark:text-orange-400 dark:border-orange-400 dark:hover:bg-orange-900/40 px-4 py-2 rounded-lg"
+                  onClick={closeDropdown}
                 >
                   Iniciar Sesión
                 </Link>
                 <Link
                   to="/register"
                   className="bg-orange-500 text-white px-4 py-2 rounded-lg hover:bg-orange-600"
+                  onClick={closeDropdown}
                 >
                   Registrarse
                 </Link>

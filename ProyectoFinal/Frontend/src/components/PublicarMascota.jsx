@@ -33,7 +33,7 @@ const PublishPetCTA = () => {
       {/* Botón que redirige*/}
       <Button
         variant="outline"
-        className="border-gray-300 dark:border-gray-600"
+        className="border-gray-300 dark:border-gray-600 cursor-pointer"
         onClick={() => navigate("/publicar-mascota")}
       >
         Publicar Mascota

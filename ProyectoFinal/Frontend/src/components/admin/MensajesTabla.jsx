@@ -324,13 +324,13 @@ const MensajesTabla = () => {
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setModalEditar(false)}
-                className="px-3 py-1 bg-gray-400 text-white rounded"
+                className="px-3 py-1 bg-gray-400 text-white rounded cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 onClick={guardarEdicion}
-                className="px-3 py-1 bg-blue-600 text-white rounded"
+                className="px-3 py-1 bg-blue-600 text-white rounded cursor-pointer"
               >
                 Guardar
               </button>
@@ -408,13 +408,13 @@ const MensajesTabla = () => {
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setModalCrear(false)}
-                className="px-3 py-1 bg-gray-400 text-white rounded"
+                className="px-3 py-1 bg-gray-400 text-white rounded cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 onClick={crearMensaje}
-                className="px-3 py-1 bg-green-600 text-white rounded"
+                className="px-3 py-1 bg-green-600 text-white rounded cursor-pointer"
               >
                 Crear
               </button>

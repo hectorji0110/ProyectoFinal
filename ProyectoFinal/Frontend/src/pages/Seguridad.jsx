@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import axios from "axios";
 import { Button } from "../components/ui/Button";
 import toast from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react";
 /**
  * Pagina de Seguridad
- * 
+ *
  * Permite al usuario cambiar su contraseña.
  * Incluye:
  *  - Validaciones en frontend
@@ -17,6 +18,8 @@ const Seguridad = () => {
     nuevaPassword: "",
     confirmarPassword: "",
   });
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   // Maneja los cambios del formulario
   const handleChange = (e) => {
@@ -108,28 +111,50 @@ const Seguridad = () => {
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Nueva Contraseña
               </label>
-              <input
-                type="password"
-                name="nuevaPassword"
-                value={form.nuevaPassword}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
-                placeholder="Ingresa tu nueva contraseña"
-              />
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  name="nuevaPassword"
+                  value={form.nuevaPassword}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 pr-12 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+                  placeholder="Ingresa tu nueva contraseña"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-white"
+                >
+                  {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+                </button>
+              </div>
             </div>
             {/* Confirmar contraseña */}
             <div>
               <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                 Confirmar Contraseña
               </label>
-              <input
-                type="password"
-                name="confirmarPassword"
-                value={form.confirmarPassword}
-                onChange={handleChange}
-                className="w-full px-4 py-2 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
-                placeholder="Vuelve a escribir la contraseña"
-              />
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  name="confirmarPassword"
+                  value={form.confirmarPassword}
+                  onChange={handleChange}
+                  className="w-full px-4 py-2 pr-12 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+                  placeholder="Vuelve a escribir la contraseña"
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-white"
+                >
+                  {showConfirmPassword ? (
+                    <EyeOff size={20} />
+                  ) : (
+                    <Eye size={20} />
+                  )}
+                </button>
+              </div>
             </div>
             <Button
               type="submit"

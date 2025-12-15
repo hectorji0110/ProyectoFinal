@@ -2,9 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import toast from "react-hot-toast";
+import { Eye, EyeOff } from "lucide-react";
 /**
  * Pagina Register
- * -------------------
+ * 
  * Permite registrar un nuevo usuario realizando validaciones antes de enviar los datos.
  *
  * Validaciones incluidas:
@@ -24,6 +25,8 @@ const Register = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
+  const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMsg, setErrorMsg] = useState("");
   // Validaciones
   //Validacio de email
@@ -164,31 +167,41 @@ const Register = () => {
               required
             />
           </div>
-          <div>
-            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Contraseña
-            </label>
+          <div className="relative">
             <input
-              type="password"
-              className="w-full px-4 py-2 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+              type={showPassword ? "text" : "password"}
+              className="w-full px-4 py-2 pr-12 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
               placeholder="*******"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowPassword(!showPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-white"
+              aria-label="Mostrar u ocultar contraseña"
+            >
+              {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
           </div>
-          <div>
-            <label className="block font-medium text-gray-700 dark:text-gray-300 mb-1">
-              Confirmar Contraseña
-            </label>
+          <div className="relative">
             <input
-              type="password"
-              className="w-full px-4 py-2 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
+              type={showConfirmPassword ? "text" : "password"}
+              className="w-full px-4 py-2 pr-12 rounded-lg border dark:border-gray-700 bg-gray-50 dark:bg-gray-800 text-gray-900 dark:text-white"
               placeholder="*******"
               value={confirmPassword}
               onChange={(e) => setConfirmPassword(e.target.value)}
               required
             />
+            <button
+              type="button"
+              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 dark:hover:text-white"
+              aria-label="Mostrar u ocultar contraseña"
+            >
+              {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
+            </button>
           </div>
           <button
             type="submit"

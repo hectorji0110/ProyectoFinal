@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import axios from "axios";
 import toast from "react-hot-toast";
 import SelectCustom from "../ui/SelectCustom";
+import { Eye, EyeOff } from "lucide-react";
 /**
  * Componente: UsuariosTabla
  * @description
@@ -37,6 +38,7 @@ const UsuariosTabla = () => {
   const [newApellido, setNewApellido] = useState("");
   const [newEmail, setNewEmail] = useState("");
   const [newPassword, setNewPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [newRol, setNewRol] = useState("usuario");
   //Obtener usuarioas paginados desde el backend
   const fetchUsuarios = async (page = 1) => {
@@ -302,13 +304,13 @@ const UsuariosTabla = () => {
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setModalEditar(false)}
-                className="px-3 py-1 bg-gray-400 text-white rounded"
+                className="px-3 py-1 bg-gray-400 text-white rounded cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 onClick={guardarEdicion}
-                className="px-3 py-1 bg-blue-600 text-white rounded"
+                className="px-3 py-1 bg-blue-600 text-white rounded cursor-pointer"
               >
                 Guardar
               </button>
@@ -336,12 +338,21 @@ const UsuariosTabla = () => {
               placeholder="Email"
               onChange={(e) => setNewEmail(e.target.value)}
             />
-            <input
-              className="border p-2 w-full mb-2"
-              placeholder="Contraseña"
-              onChange={(e) => setNewPassword(e.target.value)}
-              type="password"
-            />
+            <div className="relative mb-2">
+              <input
+                className="border p-2 w-full pr-10"
+                placeholder="Contraseña"
+                onChange={(e) => setNewPassword(e.target.value)}
+                type={showPassword ? "text" : "password"}
+              />
+              <button
+                type="button"
+                onClick={() => setShowPassword(!showPassword)}
+                className="absolute right-2 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-700 cursor-pointer"
+              >
+                {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}
+              </button>
+            </div>
             <SelectCustom
               label="Rol"
               value={newRol}
@@ -354,13 +365,13 @@ const UsuariosTabla = () => {
             <div className="flex justify-end gap-2">
               <button
                 onClick={() => setModalCrear(false)}
-                className="px-3 py-1 bg-gray-400 text-white rounded"
+                className="px-3 py-1 bg-gray-400 text-white rounded cursor-pointer"
               >
                 Cancelar
               </button>
               <button
                 onClick={crearUsuario}
-                className="px-3 py-1 bg-green-600 text-white rounded"
+                className="px-3 py-1 bg-green-600 text-white rounded cursor-pointer"
               >
                 Crear
               </button>
