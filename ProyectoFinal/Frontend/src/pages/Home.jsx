@@ -1,7 +1,7 @@
 import Hero from "../components/Hero";
 import PetList from "../components/ListaMascota";
 import HowItWorks from "../components/comoFunciona";
-import PublishPetCTA from "../components/publicarMascota";
+import PublishPetCTA from "../components/PublicarMascota";
 /**
  * Pagina de Home
  *
