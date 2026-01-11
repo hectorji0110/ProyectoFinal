@@ -37,6 +37,7 @@ const whitelist = [
   "http://localhost:3000",
   "http://localhost:5173",
   "http://192.1688.0.10:5173",
+  "https://frontend-kappa-sandy-73.vercel.app/"
 ]; // Lista blanca de dominios permitidos
 /**
  * @constant corsOptions
