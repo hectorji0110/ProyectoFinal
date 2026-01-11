@@ -1,6 +1,6 @@
-import MapPinIcon from "../assets/material-symbols-light--map-pin-heart-rounded.svg";
-import GarageIcon from "../assets/material-symbols-light--garage-home-rounded.svg";
-import SearchIcon from "../assets/search.svg";
+import MapPinIcon from "../src/assets/material-symbols-light--map-pin-heart-rounded.svg";
+import GarageIcon from "../src/assets/material-symbols-light--garage-home-rounded.svg";
+import SearchIcon from "../src/assets/search.svg";
 /**
  * HowItWorks
  *
