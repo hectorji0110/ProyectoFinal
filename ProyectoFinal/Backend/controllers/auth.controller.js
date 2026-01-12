@@ -64,7 +64,7 @@ export const login = async (req, res) => {
     if (!user.activo || user.borrado) {
       return res.status(403).json({ msg: "Cuenta inactiva o eliminada" });
     }
-    const isMatch = await bcrypt.compare(contrasena, user.contrasena);
+    const isMatch = await user.compararContrasena(contrasena);
     if (!isMatch) return res.status(400).json({ msg: "Contraseña incorrecta" });
     // Aquí se genera el token
     const token = jwt.sign(
