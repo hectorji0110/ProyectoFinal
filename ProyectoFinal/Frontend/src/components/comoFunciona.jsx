@@ -30,7 +30,7 @@ const HowItWorks = () => {
           <div className="flex flex-col items-center">
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-orange-500 text-white text-3xl">
               <img
-                src="/icons/search.svg"
+                src="../src/assets/search.svg"
                 alt="Buscar"
                 className="w-12 h-12 object-contain"
               />
@@ -43,7 +43,7 @@ const HowItWorks = () => {
           <div className="flex flex-col items-center">
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-orange-500 text-white text-3xl">
               <img
-                src="/icons/material-symbols-light--map-pin-heart-rounded.svg"
+                src="../src/assets/material-symbols-light--map-pin-heart-rounded.svg"
                 alt="Buscar"
                 className="w-12 h-12 object-contain"
               />
@@ -56,7 +56,7 @@ const HowItWorks = () => {
           <div className="flex flex-col items-center">
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-orange-500 text-white text-3xl">
               <img
-                src="/icons/material-symbols-light--garage-home-rounded.svg"
+                src="../src/assets/material-symbols-light--garage-home-rounded.svg"
                 alt="Buscar"
                 className="w-12 h-12 object-contain"
               />
