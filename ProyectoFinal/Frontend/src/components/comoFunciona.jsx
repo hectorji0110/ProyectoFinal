@@ -30,7 +30,7 @@ const HowItWorks = () => {
           <div className="flex flex-col items-center">
             <div className="w-16 h-16 flex items-center justify-center rounded-full bg-orange-500 text-white text-3xl">
               <img
-                src="../public/assets/search.svg"
+                src="../src/public/search.svg"
                 alt="Buscar"
                 className="w-12 h-12 object-contain"
               />
